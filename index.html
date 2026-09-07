@@ -355,7 +355,7 @@
     const copyLinkBtn = document.getElementById('copyLinkBtn');
     const copyLinkText = document.getElementById('copyLinkText');
     copyLinkBtn.addEventListener('click', () => {
-      navigator.clipboard?.writeText(window.location.href);
+      navigator.clipboard?.writeText(window.__CARD_URL || window.location.href);
       copyLinkText.textContent = 'تم النسخ إلى الحافظة! ✨';
       showToast('تم نسخ رابط البطاقة بنجاح');
       setTimeout(() => {
@@ -409,11 +409,13 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 </script>
 <script data-purpose="qr-render">
     (function () {
-      var qrUrl = window.location.href;
-      var qr = qrcode(0, 'M');
-      qr.addData(qrUrl, 'Byte');
+      // Fixed target: the live card URL, so local/preview copies never encode dead addresses
+      window.__CARD_URL = 'https://islam-dawod.github.io/hamodi/';
+      var qr = qrcode(0, 'H'); // 30% error correction for reliable scanning
+      qr.addData(window.__CARD_URL, 'Byte');
       qr.make();
-      document.getElementById('qrModalCode').innerHTML = qr.createSvgTag({ cellSize: 6, margin: 0, scalable: true });
+      // margin 4 adds a quiet-zone border; together with the white frame it scans reliably
+      document.getElementById('qrModalCode').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 4, scalable: true });
     })();
   </script>
 <!-- END: QR Code Render -->
